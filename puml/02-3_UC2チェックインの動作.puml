@@ -1,0 +1,29 @@
+@startuml
+!include _style.iuml
+title アクティビティ図 UC2：チェックインする
+|受付係|
+start
+:予約番号を入力する;
+|HRS|
+if (予約が存在するか？) then (しない)
+  :「予約なし」を通知する;
+  stop
+else (する)
+endif
+if (予約は未利用か？) then (利用済)
+  :「予約は利用済」を通知する;
+  stop
+else (未利用)
+  :予約を利用済にする;
+endif
+if (空室があるか？) then (なし)
+  :「空室なし」を通知する;
+  stop
+else (あり)
+  :空室から 1 室を割り当てる;
+  :料金 8000 円を計上する（未精算）;
+endif
+|受付係|
+:部屋番号を受け取る;
+stop
+@enduml

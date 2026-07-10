@@ -1,0 +1,49 @@
+@startuml
+!include _style.iuml
+title オブジェクト図（シナリオM1：2026/07/01 の宿泊を予約→チェックイン済みの断面）
+hide empty members
+
+object "<u>Aホテル : ホテル</u>" as hotel {
+  ホテル名 = Aホテル
+}
+object "<u>山田太郎 : 利用者</u>" as guest {
+  氏名 = 山田太郎
+}
+object "<u>佐藤花子 : 受付係</u>" as clerk {
+  氏名 = 佐藤花子
+}
+object "<u>予約R1 : 予約</u>" as res {
+  予約番号 = R-0001
+  宿泊日 = 2026/07/01
+  状態 = 利用済
+}
+object "<u>201号室 : 部屋</u>" as r201 {
+  部屋番号 = 201
+  在室状況 = 在室
+}
+object "<u>料金P1 : 料金</u>" as pay {
+  金額 = 8000
+  状態 = 未精算
+}
+object "<u>2026/07/01 : 空室数</u>" as aq {
+  対象日 = 2026/07/01
+  空室数 = 4
+}
+
+hotel -- r201
+hotel -- aq
+guest -- res
+res -- r201
+r201 -- pay
+clerk -- pay
+
+note bottom of pay
+  検証：金額が導出できる
+  金額 = 一律 8000円/泊（全室一律・1泊）
+end note
+
+note right of aq
+  総部屋数 5 のうち 1 室を予約で確保
+  → 当日の空室数 = 4
+end note
+@enduml

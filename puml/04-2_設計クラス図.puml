@@ -1,0 +1,138 @@
+@startuml
+!include _style.iuml
+title 設計レベル・クラス図（最小要件・多層＋DAO/Factory）
+hide empty members
+
+package app {
+  class CUI {
+    -reserveRoom()
+    -checkInRoom()
+    -checkOutRoom()
+    +main(args : String[])
+  }
+  class ManagerFactory <<singleton>> {
+    -instance : ManagerFactory
+    +getInstance() : ManagerFactory
+    +getReservationManager() : ReservationManager
+    +getRoomManager() : RoomManager
+    +getPaymentManager() : PaymentManager
+  }
+  class ReserveRoomForm <<boundary>>
+  class CheckInRoomForm <<boundary>>
+  class CheckOutRoomForm <<boundary>>
+  class ReserveRoomControl <<control>> {
+    +makeReservation(stayingDate : Date) : String
+  }
+  class CheckInRoomControl <<control>> {
+    +checkIn(reservationNumber : String) : String
+  }
+  class CheckOutRoomControl <<control>> {
+    +checkOut(roomNumber : String) : void
+  }
+}
+
+package domain {
+  class DaoFactory <<singleton>> {
+    -instance : DaoFactory
+    +getInstance() : DaoFactory
+    +getReservationDao() : ReservationDao
+    +getRoomDao() : RoomDao
+    +getAvailableQtyDao() : AvailableQtyDao
+    +getPaymentDao() : PaymentDao
+  }
+  class ReservationManager <<control>> {
+    +createReservation(d : Date) : String
+    +consumeReservation(no : String) : Date
+  }
+  interface ReservationDao {
+    +getReservation(no : String) : Reservation
+    +createReservation(r : Reservation)
+    +updateReservation(r : Reservation)
+  }
+  class ReservationSqlDao
+  class Reservation <<entity>> {
+    -reservationNumber : String
+    -stayingDate : Date
+    -status : String
+  }
+
+  class RoomManager <<control>> {
+    +updateRoomAvailableQty(d : Date, qty : int)
+    +assignCustomer(d : Date) : String
+    +removeCustomer(roomNumber : String) : Date
+  }
+  interface RoomDao
+  interface AvailableQtyDao
+  class RoomSqlDao
+  class AvailableQtySqlDao
+  class Room <<entity>> {
+    -roomNumber : String
+    -stayingDate : Date
+  }
+  class AvailableQty <<entity>> {
+    -date : Date
+    -qty : int
+  }
+
+  class PaymentManager <<control>> {
+    +createPayment(d : Date, roomNumber : String)
+    +consumePayment(d : Date, roomNumber : String)
+    -getRatePerDay(roomNumber : String) : int
+  }
+  interface PaymentDao
+  class PaymentSqlDao
+  class Payment <<entity>> {
+    -stayingDate : Date
+    -roomNumber : String
+    -amount : int
+    -status : String
+  }
+}
+
+class "HSQLDB" as db <<database>>
+
+CUI --> ManagerFactory
+CUI ..> ReserveRoomForm
+CUI ..> CheckInRoomForm
+CUI ..> CheckOutRoomForm
+ReserveRoomForm --> ReserveRoomControl
+CheckInRoomForm --> CheckInRoomControl
+CheckOutRoomForm --> CheckOutRoomControl
+ReserveRoomControl --> ManagerFactory
+CheckInRoomControl --> ManagerFactory
+CheckOutRoomControl --> ManagerFactory
+ManagerFactory --> ReservationManager
+ManagerFactory --> RoomManager
+ManagerFactory --> PaymentManager
+
+ReservationManager --> DaoFactory
+RoomManager --> DaoFactory
+PaymentManager --> DaoFactory
+
+ReservationManager ..> ReservationDao
+RoomManager ..> RoomDao
+RoomManager ..> AvailableQtyDao
+PaymentManager ..> PaymentDao
+
+ReservationSqlDao ..|> ReservationDao
+RoomSqlDao ..|> RoomDao
+AvailableQtySqlDao ..|> AvailableQtyDao
+PaymentSqlDao ..|> PaymentDao
+
+ReservationManager --> Reservation
+RoomManager --> Room
+RoomManager --> AvailableQty
+PaymentManager --> Payment
+
+ReservationSqlDao ..> db
+RoomSqlDao ..> db
+AvailableQtySqlDao ..> db
+PaymentSqlDao ..> db
+
+note right of PaymentManager
+  getRatePerDay() は最小要件では一律 8000 円。
+  Manager は Dao インタフェースにのみ依存し
+  （実装非依存＝依存性逆転）、SqlDao 差し替えで
+  永続化技術を交換できる（保守性・移植性）。
+end note
+@enduml

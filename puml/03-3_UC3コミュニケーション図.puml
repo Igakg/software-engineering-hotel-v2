@@ -1,0 +1,19 @@
+@startuml
+!include _style.iuml
+title コミュニケーション図 UC3：チェックアウトする
+
+actor 受付係 as clerk
+rectangle ":CheckOutRoomForm" <<boundary>> as form
+rectangle ":CheckOutRoomControl" <<control>> as control
+rectangle ":RoomManager" <<control>> as rm
+rectangle ":PaymentManager" <<control>> as pm
+rectangle ":Room" <<entity>> as room
+rectangle ":Payment" <<entity>> as pay
+
+clerk --> form : 1: checkOut()
+form --> control : 2: checkOut(部屋番号)
+control --> rm : 3: removeCustomer(部屋番号)
+rm --> room : 3.1: 空室に戻す
+control --> pm : 4: consumePayment(宿泊日, 部屋番号)
+pm --> pay : 4.1: 精算済にする
+@enduml

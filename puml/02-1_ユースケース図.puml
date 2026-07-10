@@ -1,0 +1,18 @@
+@startuml
+!include _style.iuml
+title ユースケース図（最小要件）
+left to right direction
+
+actor 利用者 as guest
+actor 受付係 as clerk
+
+rectangle "ホテル予約システム (HRS)" {
+  usecase "UC1\n部屋を予約する" as UC1
+  usecase "UC2\nチェックインする" as UC2
+  usecase "UC3\nチェックアウトする" as UC3
+}
+
+guest --> UC1
+clerk --> UC2
+clerk --> UC3
+@enduml

@@ -1,0 +1,71 @@
+@startuml
+!include _style.iuml
+title 分析レベル・クラス図（最小要件・境界/制御/エンティティ）
+hide circle
+
+class ReserveRoomForm <<boundary>> {
+  +submitReservation()
+}
+class CheckInRoomForm <<boundary>> {
+  +checkIn()
+}
+class CheckOutRoomForm <<boundary>> {
+  +checkOut()
+}
+class ReserveRoomControl <<control>> {
+  +makeReservation(宿泊日)
+}
+class CheckInRoomControl <<control>> {
+  +checkIn(予約番号)
+}
+class CheckOutRoomControl <<control>> {
+  +checkOut(部屋番号)
+}
+class ReservationManager <<control>> {
+  +createReservation(宿泊日)
+  +consumeReservation(予約番号)
+}
+class RoomManager <<control>> {
+  +updateRoomAvailableQty(宿泊日, 変化量)
+  +assignCustomer(宿泊日)
+  +removeCustomer(部屋番号)
+}
+class PaymentManager <<control>> {
+  +createPayment(宿泊日, 部屋番号)
+  +consumePayment(宿泊日, 部屋番号)
+}
+class Reservation <<entity>> {
+  予約番号
+  宿泊日
+  状態
+}
+class Room <<entity>> {
+  部屋番号
+  在室状況
+}
+class AvailableQty <<entity>> {
+  対象日
+  空室数
+}
+class Payment <<entity>> {
+  宿泊日
+  部屋番号
+  金額
+  状態
+}
+
+ReserveRoomForm --> ReserveRoomControl
+CheckInRoomForm --> CheckInRoomControl
+CheckOutRoomForm --> CheckOutRoomControl
+ReserveRoomControl --> RoomManager
+ReserveRoomControl --> ReservationManager
+CheckInRoomControl --> ReservationManager
+CheckInRoomControl --> RoomManager
+CheckInRoomControl --> PaymentManager
+CheckOutRoomControl --> RoomManager
+CheckOutRoomControl --> PaymentManager
+ReservationManager --> Reservation
+RoomManager --> Room
+RoomManager --> AvailableQty
+PaymentManager --> Payment
+@enduml

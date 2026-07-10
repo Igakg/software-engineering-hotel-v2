@@ -1,0 +1,28 @@
+@startuml
+!include _style.iuml
+title アクティビティ図 UC3：チェックアウトする
+|受付係|
+start
+:部屋番号を入力する;
+|HRS|
+if (部屋が存在するか？) then (しない)
+  :「部屋なし」を通知する;
+  stop
+else (する)
+endif
+if (部屋は在室中か？) then (空室)
+  :「在室していない」を通知する;
+  stop
+else (在室)
+  :部屋を空室に戻す（退室）;
+endif
+if (未精算の料金があるか？) then (なし)
+  :「該当料金なし／精算済」を通知する;
+  stop
+else (あり)
+  :料金を精算する（精算済にする）;
+endif
+|受付係|
+:チェックアウト完了を受け取る;
+stop
+@enduml

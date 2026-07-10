@@ -1,0 +1,23 @@
+@startuml
+!include _style.iuml
+title コミュニケーション図 UC2：チェックインする
+
+actor 受付係 as clerk
+rectangle ":CheckInRoomForm" <<boundary>> as form
+rectangle ":CheckInRoomControl" <<control>> as control
+rectangle ":ReservationManager" <<control>> as resm
+rectangle ":RoomManager" <<control>> as rm
+rectangle ":PaymentManager" <<control>> as pm
+rectangle ":Reservation" <<entity>> as res
+rectangle ":Room" <<entity>> as room
+rectangle ":Payment" <<entity>> as pay
+
+clerk --> form : 1: checkIn()
+form --> control : 2: checkIn(予約番号)
+control --> resm : 3: consumeReservation(予約番号)
+resm --> res : 3.1: 状態を利用済にする
+control --> rm : 4: assignCustomer(宿泊日)
+rm --> room : 4.1: 在室にする
+control --> pm : 5: createPayment(宿泊日, 部屋番号)
+pm --> pay : 5.1: 生成する «create»
+@enduml

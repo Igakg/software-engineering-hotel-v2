@@ -1,0 +1,44 @@
+@startuml
+!include _style.iuml
+title パッケージ図（多層アーキテクチャ：ui → app → domain の一方向依存）
+
+package "app" {
+  package "app.cui" as cui
+  package "app.reservation" as areserve
+  package "app.checkin" as acheckin
+  package "app.checkout" as acheckout
+}
+package "domain" {
+  package "domain.reservation" as dreserve
+  package "domain.room" as droom
+  package "domain.payment" as dpayment
+}
+package "util" as util
+database "HSQLDB" as db
+
+cui ..> areserve
+cui ..> acheckin
+cui ..> acheckout
+
+areserve ..> dreserve
+areserve ..> droom
+acheckin ..> dreserve
+acheckin ..> droom
+acheckin ..> dpayment
+acheckout ..> droom
+acheckout ..> dpayment
+
+dreserve ..> db
+droom ..> db
+dpayment ..> db
+
+areserve ..> util
+dreserve ..> util
+droom ..> util
+dpayment ..> util
+
+note top of cui
+  依存は上位→下位の一方向のみ（循環なし）
+  UI(cui) → app(各業務) → domain(各ドメイン)
+end note
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+!include _style.iuml
+title コミュニケーション図 UC1：部屋を予約する
+
+actor 利用者 as guest
+rectangle ":ReserveRoomForm" <<boundary>> as form
+rectangle ":ReserveRoomControl" <<control>> as control
+rectangle ":RoomManager" <<control>> as rm
+rectangle ":ReservationManager" <<control>> as resm
+rectangle ":AvailableQty" <<entity>> as aq
+rectangle ":Reservation" <<entity>> as res
+
+guest --> form : 1: submitReservation()
+form --> control : 2: makeReservation(宿泊日)
+control --> rm : 3: updateRoomAvailableQty(宿泊日, -1)
+rm --> aq : 3.1: 空室数を1減らす
+control --> resm : 4: createReservation(宿泊日)
+resm --> res : 4.1: 生成する «create»
+@enduml

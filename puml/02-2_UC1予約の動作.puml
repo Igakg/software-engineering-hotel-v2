@@ -1,0 +1,23 @@
+@startuml
+!include _style.iuml
+title アクティビティ図 UC1：部屋を予約する
+|利用者|
+start
+:宿泊日を入力する;
+|HRS|
+if (宿泊日は有効か？) then (いいえ)
+  :「入力が不正」を通知する;
+  stop
+else (はい)
+endif
+if (対象日に空室があるか？) then (なし)
+  :「満室」を通知する;
+  stop
+else (あり)
+  :対象日の空室数を 1 減らす;
+  :予約を作成し予約番号を発行する;
+endif
+|利用者|
+:予約番号を受け取る;
+stop
+@enduml

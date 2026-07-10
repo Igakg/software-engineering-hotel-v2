@@ -1,0 +1,29 @@
+' 共通スタイル定義（全図から !include する）
+skinparam defaultFontName "BIZ UDPGothic"
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam classAttributeIconSize 0
+skinparam ArrowColor #333333
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #FDFDF6
+skinparam objectBorderColor #333333
+skinparam objectBackgroundColor #FDFDF6
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #FDFDF6
+skinparam actorBorderColor #333333
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor white
+skinparam noteBackgroundColor #FFFFDD
+skinparam noteBorderColor #999999
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #FDFDF6
+skinparam sequenceLifeLineBorderColor #888888
+skinparam sequenceGroupBorderColor #555555
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #FDFDF6
+skinparam activityDiamondBorderColor #333333
+skinparam activityDiamondBackgroundColor #FDFDF6
+skinparam swimlaneBorderColor #999999
+skinparam stateBorderColor #333333
+skinparam stateBackgroundColor #FDFDF6
+skinparam packageBorderColor #333333
