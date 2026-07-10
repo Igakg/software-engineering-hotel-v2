@@ -1,75 +1,49 @@
 @startuml
 !include _style.iuml
-title オブジェクト図（シナリオS1'：シルバー会員 山田太郎がデラックス・シングルを2泊予約）
+title オブジェクト図（シナリオM1：2026/07/01 の宿泊を予約→チェックイン済みの断面）
+hide empty members
 
+object "<u>Aホテル : ホテル</u>" as hotel {
+  ホテル名 = Aホテル
+}
 object "<u>山田太郎 : 利用者</u>" as guest {
   氏名 = 山田太郎
 }
-object "<u>会員C0001 : 会員資格</u>" as membership {
-  会員番号 = C0001
-  入会日 = 2026/07/01
-  会員ランク = シルバー
-  割引率 = 0.05
+object "<u>佐藤花子 : 受付係</u>" as clerk {
+  氏名 = 佐藤花子
 }
-object "<u>鈴木花子 : フロント係</u>" as clerk {
-  スタッフ番号 = F000001
-  氏名 = 鈴木花子
-}
-object "<u>予約R000001 : 予約</u>" as res {
-  予約番号 = R000001
-  チェックイン日 = 2026/07/01
-  宿泊数 = 2
-  人数 = 1
-}
-object "<u>宿泊記録S1 : 宿泊記録</u>" as stay {
-  チェックイン日時 = 2026/07/01 15:00
-  チェックアウト日時 = 2026/07/03 10:00
-}
-object "<u>101号室 : 部屋</u>" as r101 {
-  部屋番号 = 101
+object "<u>予約R1 : 予約</u>" as res {
+  予約番号 = R-0001
+  宿泊日 = 2026/07/01
+  状態 = 利用済
 }
 object "<u>201号室 : 部屋</u>" as r201 {
   部屋番号 = 201
+  在室状況 = 在室
 }
-object "<u>シングル : 部屋種別</u>" as single {
-  種別名 = シングル
-  基本料金 = 8000
-  定員 = 1
+object "<u>料金P1 : 料金</u>" as pay {
+  金額 = 8000
+  状態 = 未精算
 }
-object "<u>ツイン : 部屋種別</u>" as twin {
-  種別名 = ツイン
-  基本料金 = 15000
-  定員 = 2
-}
-object "<u>スタンダード : 部屋グレード</u>" as std {
-  グレード名 = スタンダード
-  料金係数 = 1.0
-}
-object "<u>デラックス : 部屋グレード</u>" as dlx {
-  グレード名 = デラックス
-  料金係数 = 1.2
-}
-object "<u>山田太郎201号室支払 : 支払</u>" as pay1 {
-  料金 = 18240 円
-  支払方法 = クレジット
+object "<u>2026/07/01 : 空室数</u>" as aq {
+  対象日 = 2026/07/01
+  空室数 = 4
 }
 
-r101 -- twin : 種別
-r201 -- single : 種別
-r101 -- std : グレード
-r201 -- dlx : グレード
-guest -- res : 行う
-guest -- membership : 保有
-res -- r201 : 対象
-res -- stay : 実現
-res -- clerk
-stay -- pay1 : 支払済
+hotel -- r201
+hotel -- aq
+guest -- res
+res -- r201
+r201 -- pay
+clerk -- pay
 
-note bottom of stay
-  検証：宿泊料が導出できる
-  1泊料金 = 8000 × 1.2 = 9600
-  宿泊料 = 9600 × 2泊 × 2 × (1−0.05)
-  　　　 = 18240 円
+note bottom of pay
+  検証：金額が導出できる
+  金額 = 一律 8000円/泊（全室一律・1泊）
 end note
 
+note right of aq
+  総部屋数 5 のうち 1 室を予約で確保
+  → 当日の空室数 = 4
+end note
 @enduml
