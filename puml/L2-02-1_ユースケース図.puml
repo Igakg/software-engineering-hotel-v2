@@ -1,0 +1,29 @@
+@startuml
+!include _style.iuml
+title 【Loop2】ユースケース図（会員登録・予約キャンセルを追加）
+left to right direction
+
+actor 利用者 as guest
+actor 受付係 as clerk
+
+rectangle "ホテル予約システム (HRS)" {
+  usecase "UC1\n部屋を予約する" as UC1
+  usecase "UC2\nチェックインする" as UC2
+  usecase "UC3\nチェックアウトする" as UC3
+  usecase "UC4\n会員登録する" as UC4 #FFE6CC
+  usecase "UC5\n予約をキャンセルする" as UC5 #FFE6CC
+}
+
+guest --> UC1
+clerk --> UC2
+clerk --> UC3
+guest --> UC4
+guest --> UC5
+
+note bottom of UC1
+  UC1は人数・会員番号(任意)の入力を追加
+end note
+note bottom of UC5 #FFE6CC
+  オレンジ＝Loop2で追加したUC
+end note
+@enduml

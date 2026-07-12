@@ -1,0 +1,112 @@
+@startuml
+!include _style.iuml
+title 【Loop2】分析レベル・クラス図（会員・キャンセルを追加／オレンジ＝追加）
+hide circle
+
+class ReserveRoomForm <<boundary>> {
+  +submitReservation()
+}
+class CheckInRoomForm <<boundary>> {
+  +checkIn()
+}
+class CheckOutRoomForm <<boundary>> {
+  +checkOut()
+}
+class RegisterMembershipForm <<boundary>> #FFE6CC {
+  +register()
+}
+class DeleteReservationForm <<boundary>> #FFE6CC {
+  +deleteReservation()
+}
+
+class ReserveRoomControl <<control>> {
+  +makeReservation(宿泊日, 人数, 会員番号)
+}
+class CheckInRoomControl <<control>> {
+  +checkIn(予約番号)
+}
+class CheckOutRoomControl <<control>> {
+  +checkOut(部屋番号)
+}
+class RegisterMembershipControl <<control>> #FFE6CC {
+  +registerMembership(氏名, ランク)
+}
+class DeleteReservationControl <<control>> #FFE6CC {
+  +deleteReservation(予約番号)
+}
+
+class ReservationManager <<control>> {
+  +createReservation(宿泊日, 人数, 会員番号)
+  +consumeReservation(予約番号)
+  +cancelReservation(予約番号) <<追加>>
+}
+class RoomManager <<control>> {
+  +updateRoomAvailableQty(宿泊日, 変化量)
+  +assignCustomer(宿泊日, 人数)
+  +removeCustomer(部屋番号)
+}
+class PaymentManager <<control>> {
+  +createPayment(宿泊日, 部屋番号, 人数, 会員番号)
+  +consumePayment(宿泊日, 部屋番号)
+}
+class MembershipManager <<control>> #FFE6CC {
+  +registerMembership(氏名, ランク)
+  +getDiscountRate(会員番号)
+}
+
+class Reservation <<entity>> {
+  予約番号
+  宿泊日
+  状態
+  人数 <<追加>>
+  会員番号 <<追加>>
+}
+class Room <<entity>> {
+  部屋番号
+  在室状況
+  定員 <<追加>>
+}
+class AvailableQty <<entity>> {
+  対象日
+  空室数
+}
+class Payment <<entity>> {
+  金額
+  状態
+  会員番号 <<追加>>
+}
+class Membership <<entity>> #FFE6CC {
+  会員番号
+  氏名
+  ランク
+}
+class MemberRank <<entity>> #FFE6CC {
+  ランク名
+  割引率
+}
+
+ReserveRoomForm --> ReserveRoomControl
+CheckInRoomForm --> CheckInRoomControl
+CheckOutRoomForm --> CheckOutRoomControl
+RegisterMembershipForm --> RegisterMembershipControl
+DeleteReservationForm --> DeleteReservationControl
+
+ReserveRoomControl --> RoomManager
+ReserveRoomControl --> ReservationManager
+CheckInRoomControl --> ReservationManager
+CheckInRoomControl --> RoomManager
+CheckInRoomControl --> PaymentManager
+CheckOutRoomControl --> RoomManager
+CheckOutRoomControl --> PaymentManager
+RegisterMembershipControl --> MembershipManager
+DeleteReservationControl --> ReservationManager
+DeleteReservationControl --> RoomManager
+
+ReservationManager --> Reservation
+RoomManager --> Room
+RoomManager --> AvailableQty
+PaymentManager --> Payment
+PaymentManager ..> MembershipManager : 割引率照会
+MembershipManager --> Membership
+Membership --> MemberRank
+@enduml

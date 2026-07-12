@@ -1,0 +1,50 @@
+@startuml
+!include _style.iuml
+title 【Loop2】パッケージ図（会員・キャンセルのパッケージを追加／オレンジ＝追加）
+
+package "app" {
+  package "app.cui" as cui
+  package "app.reservation" as areserve
+  package "app.checkin" as acheckin
+  package "app.checkout" as acheckout
+  package "app.membership" as amember #FFE6CC
+  package "app.cancel" as acancel #FFE6CC
+}
+package "domain" {
+  package "domain.reservation" as dreserve
+  package "domain.room" as droom
+  package "domain.payment" as dpayment
+  package "domain.membership" as dmember #FFE6CC
+}
+package "util" as util
+database "HSQLDB" as db
+
+cui ..> areserve
+cui ..> acheckin
+cui ..> acheckout
+cui ..> amember
+cui ..> acancel
+
+areserve ..> dreserve
+areserve ..> droom
+acheckin ..> dreserve
+acheckin ..> droom
+acheckin ..> dpayment
+acheckout ..> droom
+acheckout ..> dpayment
+amember ..> dmember
+acancel ..> dreserve
+acancel ..> droom
+
+dpayment ..> dmember : 割引率照会
+
+dreserve ..> db
+droom ..> db
+dpayment ..> db
+dmember ..> db
+
+note top of amember #FFE6CC
+  追加：app.membership / app.cancel / domain.membership
+  依存方向（ui→app→domain 一方向）は維持
+end note
+@enduml

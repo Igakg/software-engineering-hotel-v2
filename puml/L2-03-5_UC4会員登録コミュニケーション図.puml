@@ -1,0 +1,15 @@
+@startuml
+!include _style.iuml
+title 【Loop2・新規】コミュニケーション図 UC4：会員登録する
+
+actor 利用者 as guest
+rectangle ":RegisterMembershipForm" <<boundary>> as form #FFE6CC
+rectangle ":RegisterMembershipControl" <<control>> as control #FFE6CC
+rectangle ":MembershipManager" <<control>> as mm #FFE6CC
+rectangle ":Membership" <<entity>> as ms #FFE6CC
+
+guest --> form : 1: register()
+form --> control : 2: registerMembership(氏名, ランク)
+control --> mm : 3: registerMembership(氏名, ランク)
+mm --> ms : 3.1: 会員番号を採番し生成する «create»
+@enduml

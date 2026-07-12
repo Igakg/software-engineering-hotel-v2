@@ -1,0 +1,19 @@
+@startuml
+!include _style.iuml
+title 【Loop2・新規】コミュニケーション図 UC5：予約をキャンセルする
+
+actor 利用者 as guest
+rectangle ":DeleteReservationForm" <<boundary>> as form #FFE6CC
+rectangle ":DeleteReservationControl" <<control>> as control #FFE6CC
+rectangle ":ReservationManager" <<control>> as resm
+rectangle ":RoomManager" <<control>> as rm
+rectangle ":Reservation" <<entity>> as res
+rectangle ":AvailableQty" <<entity>> as aq
+
+guest --> form : 1: deleteReservation()
+form --> control : 2: deleteReservation(予約番号)
+control --> resm : 3: cancelReservation(予約番号)
+resm --> res : 3.1: 予約を削除する（未利用のみ）
+control --> rm : 4: updateRoomAvailableQty(宿泊日, +1)
+rm --> aq : 4.1: 空室数を1増やす（在庫を戻す）
+@enduml

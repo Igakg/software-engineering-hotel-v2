@@ -1,0 +1,116 @@
+@startuml
+!include _style.iuml
+title 【Loop2】設計レベル・クラス図（会員・キャンセルを追加／オレンジ＝追加）
+hide empty members
+
+package app {
+  class ManagerFactory <<singleton>> {
+    +getReservationManager() : ReservationManager
+    +getRoomManager() : RoomManager
+    +getPaymentManager() : PaymentManager
+    +getMembershipManager() : MembershipManager <<追加>>
+  }
+  class ReserveRoomControl <<control>> {
+    +makeReservation(d : Date, guests : int, memberNo : String) : String
+  }
+  class CheckInRoomControl <<control>> {
+    +checkIn(reservationNumber : String) : String
+  }
+  class CheckOutRoomControl <<control>> {
+    +checkOut(roomNumber : String) : void
+  }
+  class RegisterMembershipControl <<control>> #FFE6CC {
+    +registerMembership(name : String, rank : String) : String
+  }
+  class DeleteReservationControl <<control>> #FFE6CC {
+    +deleteReservation(reservationNumber : String) : void
+  }
+}
+
+package domain {
+  class DaoFactory <<singleton>> {
+    +getReservationDao() : ReservationDao
+    +getRoomDao() : RoomDao
+    +getAvailableQtyDao() : AvailableQtyDao
+    +getPaymentDao() : PaymentDao
+    +getMembershipDao() : MembershipDao <<追加>>
+  }
+  class ReservationManager <<control>> {
+    +createReservation(d : Date, guests : int, memberNo : String) : String
+    +consumeReservation(no : String) : Date
+    +cancelReservation(no : String) : Date <<追加>>
+  }
+  interface ReservationDao {
+    +getReservation(no : String) : Reservation
+    +createReservation(r : Reservation)
+    +updateReservation(r : Reservation)
+    +deleteReservation(no : String) <<追加>>
+  }
+  class RoomManager <<control>> {
+    +updateRoomAvailableQty(d : Date, qty : int)
+    +assignCustomer(d : Date, guests : int) : String
+    +removeCustomer(roomNumber : String) : Date
+  }
+  class PaymentManager <<control>> {
+    +createPayment(d : Date, roomNumber : String, guests : int, memberNo : String)
+    +consumePayment(d : Date, roomNumber : String) : int
+  }
+  class Reservation <<entity>> {
+    -reservationNumber : String
+    -stayingDate : Date
+    -status : String
+    -numberOfGuests : int <<追加>>
+    -memberNumber : String <<追加>>
+  }
+  class Room <<entity>> {
+    -roomNumber : String
+    -stayingDate : Date
+    -capacity : int <<追加>>
+  }
+  class Payment <<entity>> {
+    -amount : int
+    -status : String
+    -memberNumber : String <<追加>>
+  }
+
+  package "domain.membership" #FFF3E6 {
+    class MembershipManager <<control>> #FFE6CC {
+      +registerMembership(name : String, rank : String) : String
+      +getDiscountRate(memberNo : String) : double
+    }
+    interface MembershipDao #FFE6CC {
+      +getMembership(no : String) : Membership
+      +createMembership(m : Membership)
+    }
+    class MembershipSqlDao #FFE6CC
+    class Membership <<entity>> #FFE6CC {
+      -memberNumber : String
+      -name : String
+      -rank : String
+    }
+    class MemberRank <<entity>> #FFE6CC {
+      -rankName : String
+      -discountRate : double
+    }
+  }
+}
+
+class "HSQLDB" as db <<database>>
+
+ManagerFactory --> MembershipManager
+RegisterMembershipControl --> ManagerFactory
+DeleteReservationControl --> ManagerFactory
+MembershipManager --> DaoFactory
+MembershipManager ..> MembershipDao
+MembershipSqlDao ..|> MembershipDao
+MembershipManager --> Membership
+Membership --> MemberRank
+PaymentManager ..> MembershipManager : 割引率照会
+ReservationManager ..> ReservationDao
+MembershipSqlDao ..> db
+
+note bottom of MemberRank #FFE6CC
+  予約/部屋/支払スライスのDAO構造（Dao/SqlDao/Factory）は
+  Loop1と同一。追加分も同じDAO＋Factoryパターンに従う。
+end note
+@enduml

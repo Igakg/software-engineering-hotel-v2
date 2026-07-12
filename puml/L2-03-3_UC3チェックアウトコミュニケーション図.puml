@@ -1,0 +1,21 @@
+@startuml
+!include _style.iuml
+title 【Loop2】コミュニケーション図 UC3：チェックアウトする（会員割引を追加）
+
+actor 受付係 as clerk
+rectangle ":CheckOutRoomForm" <<boundary>> as form
+rectangle ":CheckOutRoomControl" <<control>> as control
+rectangle ":RoomManager" <<control>> as rm
+rectangle ":PaymentManager" <<control>> as pm
+rectangle ":MembershipManager" <<control>> as mm #FFE6CC
+rectangle ":Room" <<entity>> as room
+rectangle ":Payment" <<entity>> as pay
+
+clerk --> form : 1: checkOut()
+form --> control : 2: checkOut(部屋番号)
+control --> rm : 3: removeCustomer(部屋番号)
+rm --> room : 3.1: 在室状況を「不在」に戻す
+control --> pm : 4: consumePayment(宿泊日, 部屋番号)
+pm --> mm : 4.1: getDiscountRate(会員番号)
+pm --> pay : 4.2: 割引を適用し精算済にする
+@enduml

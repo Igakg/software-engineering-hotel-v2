@@ -1,0 +1,54 @@
+@startuml
+!include _style.iuml
+title 【Loop2】オブジェクト図（シナリオM2：シルバー会員が2名で予約→チェックイン済みの断面）
+hide empty members
+
+object "<u>山田太郎 : 利用者</u>" as guest {
+  氏名 = 山田太郎
+}
+object "<u>会員C0001 : 会員資格</u>" as membership #FFE6CC {
+  会員番号 = C0001
+}
+object "<u>シルバー : 会員ランク</u>" as rank #FFE6CC {
+  ランク名 = シルバー
+  割引率 = 0.05
+}
+object "<u>佐藤花子 : 受付係</u>" as clerk {
+  氏名 = 佐藤花子
+}
+object "<u>予約R2 : 予約</u>" as res {
+  予約番号 = R-0002
+  宿泊日 = 2026/07/01
+  状態 = 利用済
+  人数 = 2
+  会員番号 = C0001
+}
+object "<u>201号室 : 部屋</u>" as r201 {
+  部屋番号 = 201
+  在室状況 = 在室
+  定員 = 2
+}
+object "<u>料金P2 : 料金</u>" as pay {
+  金額 = 16000
+  状態 = 未精算
+  会員番号 = C0001
+}
+
+guest -- membership
+membership -- rank
+guest -- res
+res -- r201
+r201 -- pay
+clerk -- pay
+
+note bottom of pay #FFE6CC
+  検証：宿泊料が導出できる
+  基本額 = 8000 × 2名 = 16000（未精算）
+  チェックアウトで割引適用：
+  16000 × (1 − 0.05) = 15,200 円
+end note
+
+note right of r201 #FFE6CC
+  定員2 ≧ 人数2 を満たす部屋を割当
+end note
+@enduml
