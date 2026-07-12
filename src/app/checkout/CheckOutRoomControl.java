@@ -20,14 +20,13 @@ public class CheckOutRoomControl {
 	
 	public void checkOut(String roomNumber) throws AppException {
 		try {
-			//Clear room
-			/*
-			 * Your code for clearing room by using domain.room.RoomManager
-			 */
-			//Consume payment
-			/*
-			 * Your code for consuming payment by using domain.payment.PaymentManager
-			 */
+			//Clear room: 部屋の在室状況を「在室」→「不在」に戻し、宿泊日を取得する
+			RoomManager roomManager = getRoomManager();
+			Date stayingDate = roomManager.removeCustomer(roomNumber);
+
+			//Consume payment: 該当する料金を「未精算」→「精算済」にする
+			PaymentManager paymentManager = getPaymentManager();
+			paymentManager.consumePayment(stayingDate, roomNumber);
 		}
 		catch (RoomException e) {
 			AppException exception = new AppException("Failed to check-out", e);

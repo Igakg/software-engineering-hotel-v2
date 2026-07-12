@@ -1,3 +1,5 @@
 .DS_Store
 Zone.Identifier
 bin/
+# HSQLDB 生成物（db/init-db.sh で再生成可能）
+db/hoteldb.*

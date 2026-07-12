@@ -137,11 +137,11 @@ public class PaymentSqlDao implements PaymentDao {
 	}
 
 	/**
-	 * ƒf[ƒ^ƒx[ƒXƒRƒlƒNƒVƒ‡ƒ“‚ðŽæ“¾‚µ‚Ü‚·B<br>
+	 * ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’å–å¾—ã—ã¾ã™ã€‚<br>
 	 * 
-	 * @return ƒRƒlƒNƒVƒ‡ƒ“
+	 * @return ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³
 	 * @throws PaymentException
-	 *            ƒf[ƒ^ƒx[ƒXƒRƒlƒNƒVƒ‡ƒ“Žæ“¾‚ªŽ¸”s‚µ‚½ê‡‚É”­¶‚µ‚Ü‚·B
+	 *            ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³å–å¾—ãŒå¤±æ•—ã—ãŸå ´åˆã«ç™ºç”Ÿã—ã¾ã™ã€‚
 	 */
 	private Connection getConnection() throws PaymentException {
 		Connection connection = null;
